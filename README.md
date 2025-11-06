@@ -1,34 +1,24 @@
-# Scientific Calculator — Melissa
+# Calculator Web App
 
-
-This repository contains a colourful, responsive, single-page **Scientific Calculator** implemented in plain HTML, CSS and JavaScript. It supports standard arithmetic, scientific functions (trigonometry in degrees, inverse trig, natural log `ln`, base-10 `log`, exponent `exp`, square root), factorial, memory, and a clickable history. A theme toggle randomly recolours the accents.
-
+A modern, responsive web-based calculator with **history tracking**, **night mode**, and a clean, minimal design.
 
 ---
-
-
-## Files
-
-
-- `index.html` — main HTML file
-- `style.css` — styles for layout and colorful theme
-- `script.js` — calculator logic (evaluation, history, memory, keyboard support)
-
-
----
-
 
 ## Features
 
+- **Basic Calculator Functions**: Addition, subtraction, multiplication, division, and decimals.  
+- **Clear & Backspace**: Quickly clear the display (`C`) or delete the last character (`⌫`).  
+- **History Panel**: Tracks previous calculations for easy reuse.  
+- **Night Mode Toggle**: Switch between light and dark themes with the moon/sun icon.  
+- **Responsive Design**: Optimized for desktop and mobile screens.  
+- **Keyboard Support**: Input numbers and operators using your keyboard.
 
-- Basic arithmetic: `+ - × ÷` and parentheses
-- Exponentiation (`^`)
-- Trigonometric functions: `sin`, `cos`, `tan` (uses degrees)
-- Inverse trig: `asin`, `acos`, `atan` (returns degrees)
-- Natural logarithm: `ln()` and base-10 `log()`
-- Exponential `exp()` and square root `sqrt()`
-- Factorial `n!`
-- Memory (M+, M-, MR) and clickable history entries
-- Keyboard support for numbers, operators, Enter, Backspace
-- Colourful UI and theme toggle
-"# Calculator-" 
+---
+
+## Top Row Buttons
+
+| Button | Function |
+|--------|---------|
+| `.`    | Decimal point |
+| `C`    | Clear display |
+| `⌫`    | Backspace / remove last character |

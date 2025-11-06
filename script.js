@@ -1,68 +1,73 @@
 const display = document.getElementById('display');
 const buttons = document.querySelectorAll('.btn');
-const historyBox = document.getElementById('history');
-let expression = '';
+const historyContainer = document.getElementById('history');
 
-function degToRad(deg){ return deg * Math.PI / 180; }
-function factorial(n){ 
-    if(n > 170) return Infinity; 
-    return n <= 1 ? 1 : n * factorial(n - 1); 
+let history = [];
+
+// Function to calculate expression
+function calculate(expr) {
+  try {
+    return eval(expr);
+  } catch (e) {
+    return 'Error';
+  }
 }
 
-function evaluate(expr){
-    try {
-        expr = expr.replace(/\^/g,'**');
-        expr = expr.replace(/π2/g,'Math.PI**2');
-        expr = expr.replace(/π/g, Math.PI);
-        expr = expr.replace(/e/g, Math.E);
-        expr = expr.replace(/sin\(/g,'Math.sin(degToRad(');
-        expr = expr.replace(/cos\(/g,'Math.cos(degToRad(');
-        expr = expr.replace(/tan\(/g,'Math.tan(degToRad(');
-        expr = expr.replace(/sqrt\(/g,'Math.sqrt(');
-        expr = expr.replace(/ln\(/g,'Math.log(');
-        expr = expr.replace(/log\(/g,'Math.log10(');
-        expr = expr.replace(/exp\(/g,'Math.exp(');
-        expr = expr.replace(/abs\(/g,'Math.abs(');
-        expr = expr.replace(/mod/g,'%');
-        expr = expr.replace(/rand/g,'Math.random()');
+// Update display & history
+function updateDisplay(value, addToHistory = false) {
+  display.value = value;
+  if (addToHistory && value !== 'Error') {
+    history.unshift(value);
+    renderHistory();
+  }
+}
 
-        const func = new Function('degToRad','factorial','Math','return ('+expr+')');
-        let res = func(degToRad, factorial, Math);
-        if(!isFinite(res)) throw new Error('Math error');
-        return Math.round((res+Number.EPSILON)*1e12)/1e12;
-    } catch(e){
-        return 'Error';
+// Render history panel
+function renderHistory() {
+  historyContainer.innerHTML = '';
+  history.forEach(item => {
+    const div = document.createElement('div');
+    div.textContent = item;
+    div.addEventListener('click', () => display.value = item);
+    historyContainer.appendChild(div);
+  });
+}
+
+// Button click handling
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const action = btn.dataset.action;
+    if (action === '=') {
+      const result = calculate(display.value);
+      updateDisplay(result, true);
+    } else if (action === 'C') {
+      display.value = '';
+    } else if (action === 'back') {
+      display.value = display.value.slice(0, -1);
+    } else {
+      display.value += action;
     }
-}
+  });
+});
 
-function addHistory(expr,res){
-    const entry = document.createElement('div');
-    entry.textContent = `${expr} = ${res}`;
-    entry.onclick = () => {
-        expression = res.toString();
-        display.value = expression;
-    };
-    historyBox.prepend(entry);
-}
+// Keyboard support
+document.addEventListener('keydown', (e) => {
+  const allowedKeys = '0123456789+-*/().';
+  if (allowedKeys.includes(e.key)) {
+    display.value += e.key;
+  } else if (e.key === 'Enter') {
+    updateDisplay(calculate(display.value), true);
+  } else if (e.key === 'Backspace') {
+    display.value = display.value.slice(0, -1);
+  } else if (e.key.toLowerCase() === 'c') {
+    display.value = '';
+  }
+});
 
-buttons.forEach(button=>{
-    button.addEventListener('click',()=>{
-        const action = button.getAttribute('data-action');
+// ---------- THEME TOGGLE ----------
+const toggleThemeBtn = document.getElementById('toggleTheme');
 
-        if(!isNaN(action) || action==='.') expression += action;
-        else if(['+', '-', '*', '/', '^','(',')','%'].includes(action)) expression += action;
-        else if(action==='='){
-            const res = evaluate(expression);
-            addHistory(expression,res);
-            expression = res.toString();
-        } else if(action==='C'){
-            expression = '';
-        } else if(action==='back'){
-            expression = expression.slice(0,-1);
-        } else if(['sin','cos','tan','sqrt','ln','log','exp','abs','pi','e','mod','rand','pi2'].includes(action)){
-            expression += action + '(';
-        }
-
-        display.value = expression;
-    });
+toggleThemeBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark-mode');
+  toggleThemeBtn.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
 });
